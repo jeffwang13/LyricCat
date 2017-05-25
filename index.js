@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 // for Facebook verification
 app.get('/webhook', function(req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === <VERIFY_TOKEN>) {
+        req.query['hub.verify_token'] === 'git_git_git_drrrah') {
         console.log("Validating webhook");
         res.status(200).send(req.query['hub.challenge']);
     } else {
