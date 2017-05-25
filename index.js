@@ -16,7 +16,7 @@ app.use(bodyParser.json())
 
 // Index route
 app.get('/', function (req, res) {
-    //res.send('Suh dudes, I am the best lyric bot on the web. Git git git drrrrrah!')
+    res.send('Suh dudes, I am the best lyric bot on the web. Git git git drrrrrah!')
 })
 
 // for Facebook verification
