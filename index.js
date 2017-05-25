@@ -1,5 +1,6 @@
 'use strict'
 
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
@@ -21,7 +22,7 @@ app.get('/', function (req, res) {
 // for Facebook verification
 app.get('/webhook', function(req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === 'git_git_git_drrrah') {
+        req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
         console.log("Validating webhook");
         res.status(200).send(req.query['hub.challenge']);
     } else {
