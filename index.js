@@ -80,7 +80,7 @@ function sendGenericMessage(sender) {
                 "elements": [{
                     "title": "Diana Korkunova",
                     "subtitle": "Instagram model",
-                    "image_url": "https://s-media-cache-ak0.pinimg.com/originals/be/c5/b1/bec5b1d0f87180b1df69b41e0636d797.jpg",
+                    "image_url": "http://sopicsee.vicp.io/oumei/170305160656/023.jpg",
                     "buttons": [{
                         "type": "web_url",
                         "url": "https://www.instagram.com/diana_korkunova/?hl=en",
