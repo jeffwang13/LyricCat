@@ -30,19 +30,6 @@ app.get('/webhook', function(req, res) {
     }
 });
 
-// app.post('/webhook/', function (req, res) {
-//     let messaging_events = req.body.entry[0].messaging
-//     for (let i = 0; i < messaging_events.length; i++) {
-//         let event = req.body.entry[0].messaging[i]
-//         let sender = event.sender.id
-//         if (event.message && event.message.text) {
-//             let text = event.message.text
-//             sendTextMessage(sender, "Hi Jaswanth, you should quit League of Legends; echo: " + text.substring(0, 200))
-//         }
-//     }
-//     res.sendStatus(200)
-// })
-
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
@@ -50,15 +37,15 @@ app.post('/webhook/', function (req, res) {
         let sender = event.sender.id
         if (event.message && event.message.text) {
             let text = event.message.text
-            if (text === 'Generic') {
+            if (text === 'CompareCat') {
                 sendGenericMessage(sender)
                 continue
             }
-            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+            sendTextMessage(sender, "Hi, I'm LyricCat! Echo: " + text.substring(0, 200))
         }
         if (event.postback) {
             let text = JSON.stringify(event.postback)
-            sendTextMessage(sender, "Postback received: "+text.substring(0, 200), process.env.PAGE_ACCESS_TOKEN)
+            sendTextMessage(sender, "Vote Registered: "+text.substring(0, 200), process.env.PAGE_ACCESS_TOKEN)
             continue
         }
     }
@@ -91,26 +78,30 @@ function sendGenericMessage(sender) {
             "payload": {
                 "template_type": "generic",
                 "elements": [{
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                    "title": "Diana Korkunova",
+                    "subtitle": "Instagram model",
+                    "image_url": "http://i.imgur.com/qLMi51J.jpg",
                     "buttons": [{
                         "type": "web_url",
-                        "url": "https://www.messenger.com",
-                        "title": "web url"
+                        "url": "https://www.instagram.com/diana_korkunova/?hl=en",
+                        "title": "Instagram"
                     }, {
                         "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for first element in a generic bubble",
+                        "title": "Vote",
+                        "payload": "I choose Diana",
                     }],
                 }, {
-                    "title": "Second card",
-                    "subtitle": "Element #2 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+                    "title": "IU",
+                    "subtitle": "Singer and actor",
+                    "image_url": "http://www.allkpop.com/upload/2016/10/af_org/IU_1476317492_af_org.jpg",
                     "buttons": [{
+                        "type": "web_url",
+                        "url": "https://www.instagram.com/dlwlrma/?hl=en",
+                        "title": "Instagram"
+                    }, {
                         "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for second element in a generic bubble",
+                        "title": "Vote",
+                        "payload": "I choose IU",
                     }],
                 }]
             }
@@ -122,7 +113,7 @@ function sendGenericMessage(sender) {
         method: 'POST',
         json: {
             recipient: {id:sender},
-            message: messageData,
+            message: messageData
         }
     }, function(error, response, body) {
         if (error) {
