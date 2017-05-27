@@ -1,10 +1,14 @@
 'use strict'
 
 require('dotenv').config()
+
+const cheerio = require('cheerio');
+const xpath = require('xpath')
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
+const getLyrics = require('./scrape')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -38,10 +42,16 @@ app.post('/webhook/', function (req, res) {
         if (event.message && event.message.text) {
             let text = event.message.text
             if (text === 'CompareCat') {
-                sendGenericMessage(sender)
+                sendCompareMessage(sender)
                 continue
             }
-            sendTextMessage(sender, "Hi, I'm LyricCat! Echo: " + text.substring(0, 200))
+            if (/Song:\s\w+\sArtist:\s\w+/i.test(text)) {
+                const song = text.match(/song:(.*)artist:/i)[1].trim();
+                const artist = text.match(/artist:(.*)/i)[1].trim();
+                sendLyricMessage(sender, song, artist);
+                continue;
+            }
+            sendTextMessage(sender, "Hi, I'm LyricCat! Message me 'Song: {YourSong} Artist: {SongArtist}' for lyrics.")
         }
         if (event.postback) {
             let text = JSON.stringify(event.postback)
@@ -71,7 +81,29 @@ function sendTextMessage(sender, text) {
     })
 }
 
-function sendGenericMessage(sender) {
+function sendLyricMessage(sender, song, artist) {
+    const lyricsUrl = `http://www.azlyrics.com/lyrics/${artist}/${song}.html`;
+    const lyrics = getLyrics(lyricsUrl);
+
+    let messageData = { text:lyrics }
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+}
+
+function sendCompareMessage(sender) {
     let messageData = {
         "attachment": {
             "type": "template",
