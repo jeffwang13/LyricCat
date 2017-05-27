@@ -6,7 +6,7 @@ function getLyrics(sender, url) {
     let httpPromise = new Promise(function(resolve, reject) {
         request({uri: url,}, function (error, response, body) {
             console.log('==================' + url);
-            console.log('body');
+            console.log(body);
             if (error) {
                 reject("Error: unable to get data." + error);
             }
