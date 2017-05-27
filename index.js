@@ -3,12 +3,13 @@
 require('dotenv').config()
 
 const cheerio = require('cheerio');
-const xpath = require('xpath')
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 const getLyrics = require('./scrape')
+var xpath = require('xpath')
+    , dom = require('xmldom').DOMParser
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -82,6 +83,13 @@ function sendTextMessage(sender, text) {
 }
 
 function sendLyricMessage(sender, song, artist) {
+    request({
+        uri: 'http://www.azlyrics.com/lyrics/desiigner/panda.html',
+    }, function(error, response, body) {
+        const doc = new dom().parseFromString(body);
+        const lyrics = xpath.select("/html/body/div[@class='container main-page']/div[@class='row']/div[@class='col-xs-12 col-lg-8 text-center']/div[5]", doc).toString();
+        console.log(lyrics);
+    });
     const lyricsUrl = `http://www.azlyrics.com/lyrics/${artist}/${song}.html`;
     const lyrics = getLyrics(lyricsUrl);
 
