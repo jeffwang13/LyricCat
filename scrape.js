@@ -5,8 +5,6 @@ const dom = require('xmldom').DOMParser;
 function getLyrics(sender, url) {
     let httpPromise = new Promise(function(resolve, reject) {
         request({uri: url,}, function (error, response, body) {
-            console.log('==================' + url);
-            console.log(body);
             if (error) {
                 reject("Error: unable to get data." + error);
             }
@@ -19,7 +17,7 @@ function getLyrics(sender, url) {
     });
 
     httpPromise.then(function(result) {
-        lyrics = result;
+        const lyrics = result;
         let messageData = { text:lyrics }
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
