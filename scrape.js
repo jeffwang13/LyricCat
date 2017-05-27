@@ -3,15 +3,16 @@ const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
 
 function getLyrics(sender, url) {
-    let lyrics = 'fuck';
+    let lyrics = 'test';
     let httpPromise = new Promise(function(resolve, reject) {
-        request({uri: url,}, function (error, response, body) {
+        request({uri: 'http://jeffreyw.me/',}, function (error, response, body) {
             if (error) {
                 reject("Error: unable to get data." + error);
             }
             else {
                 const doc = new dom().parseFromString(body);
-                const response = xpath.select("/html/body/div[@class='container main-page']/div[@class='row']/div[@class='col-xs-12 col-lg-8 text-center']/div[5]", doc).toString();
+                //const response = xpath.select("/html/body/div[@class='container main-page']/div[@class='row']/div[@class='col-xs-12 col-lg-8 text-center']/div[5]", doc).toString();
+                const response = xpath.select("/html/body/div[@class='container']/div[@class='row'][1]/div[@class='box']/div[@class='col-lg-12']/p[1]", doc).toString();
                 resolve(response);
             }
         });
