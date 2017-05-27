@@ -7,7 +7,7 @@ function getLyrics(sender, url) {
     let httpPromise = new Promise(function(resolve, reject) {
         request({uri: url,}, function (error, response, body) {
             if (error) {
-                reject("Error: unable to get data.");
+                reject("Error: unable to get data." + error);
             }
             else {
                 const doc = new dom().parseFromString(body);
@@ -36,7 +36,7 @@ function getLyrics(sender, url) {
             }
         })
     }, function(err) {
-        let messageData = { text:'Unable to access lyrics.' }
+        let messageData = { text:`Unable to access lyrics. ${err}` }
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
