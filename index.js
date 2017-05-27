@@ -78,30 +78,30 @@ function sendGenericMessage(sender) {
             "payload": {
                 "template_type": "generic",
                 "elements": [{
-                    "title": "Diana Korkunova",
-                    "subtitle": "Instagram model",
-                    "image_url": "http://sopicsee.vicp.io/oumei/170305160656/023.jpg",
+                    "title": "Drake",
+                    "subtitle": "Champagne papi",
+                    "image_url": "http://www.media1.hw-static.com/media/2017/04/wenn_drake_041317_1800x1200-1800x1200.jpg",
                     "buttons": [{
                         "type": "web_url",
-                        "url": "https://www.instagram.com/diana_korkunova/?hl=en",
-                        "title": "Instagram"
+                        "url": "https://youtu.be/sR_pfk9JVlc",
+                        "title": "Song"
                     }, {
                         "type": "postback",
                         "title": "Vote",
-                        "payload": "I choose Diana",
+                        "payload": "I choose Drake",
                     }],
                 }, {
-                    "title": "IU",
-                    "subtitle": "Singer and actor",
-                    "image_url": "http://www.allkpop.com/upload/2016/10/af_org/IU_1476317492_af_org.jpg",
+                    "title": "NAV",
+                    "subtitle": "Doesn't pay for his sneakers",
+                    "image_url": "http://universalmusic.umg-wp.com/files/2017/02/NAV.jpg",
                     "buttons": [{
                         "type": "web_url",
-                        "url": "https://www.instagram.com/dlwlrma/?hl=en",
-                        "title": "Instagram"
+                        "url": "https://youtu.be/4B7J_Ql2vjo",
+                        "title": "Song"
                     }, {
                         "type": "postback",
                         "title": "Vote",
-                        "payload": "I choose IU",
+                        "payload": "I choose NAV",
                     }],
                 }]
             }
