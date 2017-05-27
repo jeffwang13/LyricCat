@@ -83,7 +83,7 @@ function sendTextMessage(sender, text) {
 
 function sendLyricMessage(sender, song, artist) {
     const lyricsUrl = `http://www.azlyrics.com/lyrics/${artist}/${song}.html`;
-    const lyrics = scrapers.getLyrics(lyricsUrl);
+    const lyrics = scrapers.getLyrics(sender, lyricsUrl);
 }
 
 function sendCompareMessage(sender) {

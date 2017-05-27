@@ -2,7 +2,7 @@ const request = require('request');
 const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
 
-function getLyrics(url) {
+function getLyrics(sender, url) {
     let lyrics = 'fuck';
     let httpPromise = new Promise(function(resolve, reject) {
         request({uri: url,}, function (error, response, body) {
