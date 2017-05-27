@@ -1,6 +1,6 @@
-var Client = require('node-rest-client').Client;
+const Client = require('node-rest-client').Client;
 
-var client = new Client();
+const client = new Client();
 
 function queryLyrics (song){
     client.get("api.genius.com/songs/1", function (data, response) {
@@ -12,4 +12,3 @@ function queryLyrics (song){
 }
 
 module.exports.queryLyrics = queryLyrics;
-
