@@ -3,7 +3,6 @@ const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
 
 function getLyrics(sender, url) {
-    let lyrics = 'test';
     let httpPromise = new Promise(function(resolve, reject) {
         request({uri: url,}, function (error, response, body) {
             if (error) {
