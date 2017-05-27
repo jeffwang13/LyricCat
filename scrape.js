@@ -11,6 +11,7 @@ function getLyrics(sender, url) {
             else {
                 const doc = new dom().parseFromString(body);
                 const response = xpath.select("/html/body/div[@id='wrapper']/div[@class='dvtable marginspace']/div[@class='trow']/div[@class='tdata datawidth']/div[@id='ldata']/div[@class='lcontent']", doc).toString();
+                console.log(response);
                 resolve(response);
             }
         });
