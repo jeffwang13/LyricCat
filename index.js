@@ -82,7 +82,7 @@ function sendTextMessage(sender, text) {
 }
 
 function sendLyricMessage(sender, song, artist) {
-    const lyricsUrl = `www.lyricsondemand.com/${artist.charAt(0)}/${artist}lyrics/${song}lyrics.html`;
+    const lyricsUrl = `http://www.lyricsondemand.com/${artist.charAt(0)}/${artist}lyrics/${song}lyrics.html`;
     const lyrics = scrapers.getLyrics(sender, lyricsUrl);
 }
 
