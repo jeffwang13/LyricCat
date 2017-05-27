@@ -8,7 +8,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
-const getLyrics = require('./scrape')
+const scrapers = require('./scrape')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -83,7 +83,7 @@ function sendTextMessage(sender, text) {
 
 function sendLyricMessage(sender, song, artist) {
     const lyricsUrl = `http://www.azlyrics.com/lyrics/${artist}/${song}.html`;
-    const lyrics = getLyrics(lyricsUrl);
+    const lyrics = scrapers.getLyrics(lyricsUrl);
 }
 
 function sendCompareMessage(sender) {
