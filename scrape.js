@@ -17,6 +17,7 @@ function getLyrics(sender, url) {
     });
 
     httpPromise.then(function(result) {
+        console.log('==================' + result);
         const lyrics = result;
         let messageData = { text:lyrics }
         request({
