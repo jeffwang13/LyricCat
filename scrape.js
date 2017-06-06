@@ -5,6 +5,7 @@ const parse5 = require('parse5');
 //const dom = require('xmldom').DOMParser;
 
 function getLyrics(sender, url) {
+    console.log(url);
     let httpPromise = new Promise(function(resolve, reject) {
         request({uri: url,}, function (error, response, body) {
             if (error) {
@@ -41,6 +42,7 @@ function getLyrics(sender, url) {
                 lyrics = lyrics.substring(640);
             } else {
                 messageData = { text:lyrics }
+                sendMessage(messageData, sender);
                 break;
             }
             sendMessage(messageData, sender);

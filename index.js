@@ -45,9 +45,9 @@ app.post('/webhook/', function (req, res) {
                 sendCompareMessage(sender)
                 continue
             }
-            if (/Song:\s\w+\sArtist:\s\w+/i.test(text)) {
-                const song = text.match(/song:(.*)artist:/i)[1].trim().toLocaleLowerCase().replace(' ', '');
-                const artist = text.match(/artist:(.*)/i)[1].trim().toLocaleLowerCase().replace(' ', '');
+            if (/Song:.+Artist:.+/i.test(text)) {
+                const song = text.match(/song:(.+)artist:/i)[1].trim().toLocaleLowerCase().replace(/ /g, '');
+                const artist = text.match(/artist:(.+)/i)[1].trim().toLocaleLowerCase().replace(/ /g, '');
                 sendLyricMessage(sender, song, artist);
                 continue;
             }
