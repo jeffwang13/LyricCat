@@ -70,10 +70,7 @@ function sendTextMessage(sender, text) {
         method: 'POST',
         json: {
             recipient: {id:sender},
-            messages:[
-                messageData,
-                { text:'Message 2'}
-            ]
+            message: messageData,
         }
     }, function(error, response, body) {
         if (error) {
