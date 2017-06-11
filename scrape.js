@@ -12,7 +12,7 @@ function getLyrics(sender, url) {
                 reject("Error: unable to get data." + error);
             }
             else {
-                const sanitizedBody = body.toString().replace(/<br \/>/g, '');
+                const sanitizedBody = body.toString().replace(/<br \/>|<i>|<\/i>|<!/g, '');
                 // const document = parse5.parse(sanitizedBody.toString());
                 // const xhtml = xmlser.serializeToString(document);
                 // const doc = new dom().parseFromString(xhtml);
