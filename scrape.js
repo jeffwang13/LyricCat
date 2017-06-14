@@ -37,14 +37,8 @@ function getLyrics(sender, url) {
         let lyrics = result;
         while (lyrics.length > 0){
             let messageData = '';
-            if (lyrics.length >= 640) {
-                messageData = { text:lyrics.substring(0,640) }
-                lyrics = lyrics.substring(640);
-            } else {
-                messageData = { text:lyrics }
-                sendMessage(messageData, sender);
-                break;
-            }
+            messageData = { text:lyrics.substring(0,640) }
+            lyrics = lyrics.substring(640);
             sendMessage(messageData, sender);
         }
     }, function(err) {
@@ -83,7 +77,7 @@ function sendMessage(messageData, recipient){
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error)
             }
-        })}, 0
+        })}, 1000
     );
 }
 
