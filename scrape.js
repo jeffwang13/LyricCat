@@ -35,12 +35,7 @@ function getLyrics(sender, url) {
     httpPromise.then(function(result) {
         console.log('================== Lyrics:' + result);
         let lyrics = result;
-        while (lyrics.length > 0){
-            let messageData = '';
-            messageData = { text:lyrics.substring(0,640) }
-            lyrics = lyrics.substring(640);
-            sendMessage(messageData, sender);
-        }
+        sendChunkedMessages(lyrics, sender, 0)
     }, function(err) {
         let messageData = { text:`Unable to access lyrics. ${err}` }
         request({
@@ -49,7 +44,7 @@ function getLyrics(sender, url) {
             method: 'POST',
             json: {
                 recipient: {id:sender},
-                message: messageData,
+                message: {text:messageData},
             }
         }, function(error, response) {
             if (error) {
@@ -61,15 +56,24 @@ function getLyrics(sender, url) {
     });
 }
 
-function sendMessage(messageData, recipient){
+function sendChunkedMessages(lyrics, sender, count) {
+    if (lyrics.length <= 0)
+        return
+    sendMessage(lyrics.substring(0, 640), sender, ++count)
+    sendChunkedMessages(lyrics.substring(640), sender, count)
+    return
+}
+
+function sendMessage(messageData, recipient, count) {
     setTimeout(function() {
+        console.log("Lyrics==================== " + messageData)
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
             method: 'POST',
             json: {
                 recipient: {id:recipient},
-                message: messageData,
+                message: {text:messageData},
             }
         }, function(error, response) {
             if (error) {
@@ -77,7 +81,7 @@ function sendMessage(messageData, recipient){
             } else if (response.body.error) {
                 console.log('Error: ', response.body.error)
             }
-        })}, 1000
+        })}, 1000 * count
     );
 }
 
