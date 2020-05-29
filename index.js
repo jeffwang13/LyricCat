@@ -49,7 +49,7 @@ app.post('/webhook/', function (req, res) {
                 mailer.sendLyricMessage(sender, song, artist);
                 continue;
             }
-            mailer.sendTextMessage(sender, "Hi, I'm LyricCat! Message me 'Song: {YourSong} Artist: {SongArtist}' for lyrics.")
+            mailer.sendTextMessage(sender, "Hi, I'm LyricCat 😸, a chatbot to help you with all things musical! My master is busy teaching me new tricks, but for now message me 'Song: {YourSong} Artist: {SongArtist}' for some lyrics!")
         }
         if (event.postback) {
             let text = JSON.stringify(event.postback)
