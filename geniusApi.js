@@ -11,24 +11,13 @@ function getGeniusLyrics(sender, song, artist) {
 
     lyricAPI.getLyrics(options).then(function(result) {
         let lyrics = result;
+        if (lyrics == null) {
+            throw "NotFound"
+        }
         sendChunkedMessages(lyrics, sender, 0)
-    }, function(err) {
-        let messageData = { text:`Unable to access lyrics. ${err}` }
-        request({
-            url: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
-            method: 'POST',
-            json: {
-                recipient: {id:sender},
-                message: {text:messageData},
-            }
-        }, function(error, response) {
-            if (error) {
-                console.log('Error sending messages: ', error)
-            } else if (response.body.error) {
-                console.log('Error: ', response.body.error)
-            }
-        })
+    }).catch(function(err) {
+        let message = "Oh no! The song you requested was not found in the Genius database."
+        sendTextMessage(sender, message)
     });
 }
 
@@ -58,6 +47,25 @@ function sendMessage(messageData, recipient, count) {
             }
         })}, 1000 * count
     );
+}
+
+function sendTextMessage(sender, text) {
+    let messageData = { text:text }
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
 }
 
 module.exports.getGeniusLyrics = getGeniusLyrics;

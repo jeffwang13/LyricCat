@@ -8,7 +8,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
-const scrapers = require('./scrape')
+const geniusApi = require('./geniusApi')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -82,7 +82,7 @@ function sendTextMessage(sender, text) {
 }
 
 function sendLyricMessage(sender, song, artist) {
-    const lyrics = scrapers.getGeniusLyrics(sender, song, artist);
+    const lyrics = geniusApi.getGeniusLyrics(sender, song, artist);
 }
 
 function sendCompareMessage(sender) {
