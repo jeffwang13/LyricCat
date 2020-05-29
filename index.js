@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const app = express()
 const geniusApi = require('./geniusApi')
 const mailer = require('./mailer')
+const redis = require('./redis')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -37,25 +38,34 @@ app.post('/webhook/', function (req, res) {
     for (let i = 0; i < messaging_events.length; i++) {
         let event = req.body.entry[0].messaging[i]
         let sender = event.sender.id
-        if (event.message && event.message.text) {
-            let text = event.message.text
-            if (text === 'CompareCat') {
-                mailer.sendCompareMessage(sender)
-                continue
+        redis.getConversationStep(sender, function(conversationStep) {
+            if (event.message && event.message.text) {
+                const text = event.message.text
+
+                if (conversationStep == "SS0") {
+                    redis.setConversationStep(sender, "SS1")
+                    mailer.sendTextMessage(sender, "Hi, I'm LyricCat 😸, a chatbot to help you with all things musical!\n\nWhat's the name of the song you would like the lyrics for?")
+                } else if (conversationStep == "RS0") {
+                    redis.setConversationStep(sender, "SS1")
+                    mailer.sendTextMessage(sender, "What's the name of another song you would like lyrics for? 😺")
+                } else if (conversationStep == "SS1") {
+                    redis.setConversationStep(sender, "SS2")
+                    redis.setSong(sender, text)
+                    mailer.sendTextMessage(sender, "Great! And who is that song by?")
+                } else if (conversationStep == "SS2") {
+                    redis.setConversationStep(sender, "RS0")
+                    redis.setArtist(sender, text)
+                    redis.getSong(sender, function(response) {
+                        const song = response
+                        const artist = text
+                        mailer.sendLyricMessage(sender, song, artist)
+                    })
+                }
+            } else if (event.postback) {
+                let text = JSON.stringify(event.postback)
+                mailer.sendTextMessage(sender, "Vote Registered: "+text.substring(0, 200), process.env.PAGE_ACCESS_TOKEN)
             }
-            if (/Song:.+Artist:.+/i.test(text)) {
-                const song = text.match(/song:(.+)artist:/i)[1].trim().toLocaleLowerCase().replace(/ /g, '');
-                const artist = text.match(/artist:(.+)/i)[1].trim().toLocaleLowerCase().replace(/ /g, '');
-                mailer.sendLyricMessage(sender, song, artist);
-                continue;
-            }
-            mailer.sendTextMessage(sender, "Hi, I'm LyricCat 😸, a chatbot to help you with all things musical!\n\nMy master is busy teaching me new tricks, but for now message me 'Song: {YourSong} Artist: {SongArtist}' for some lyrics!")
-        }
-        if (event.postback) {
-            let text = JSON.stringify(event.postback)
-            mailer.sendTextMessage(sender, "Vote Registered: "+text.substring(0, 200), process.env.PAGE_ACCESS_TOKEN)
-            continue
-        }
+        })
     }
     res.sendStatus(200)
 })
