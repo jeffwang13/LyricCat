@@ -1,5 +1,6 @@
 const request = require('request');
 const lyricAPI = require('genius-lyrics-api');
+const mailer = require('./mailer')
 
 function getGeniusLyrics(sender, song, artist) {
     const options = {
@@ -14,58 +15,11 @@ function getGeniusLyrics(sender, song, artist) {
         if (lyrics == null) {
             throw "NotFound"
         }
-        sendChunkedMessages(lyrics, sender, 0)
+        mailer.sendChunkedMessages(lyrics, sender, 0)
     }).catch(function(err) {
         let message = "Oh no! The song you requested was not found in the Genius database."
-        sendTextMessage(sender, message)
+        mailer.sendTextMessage(sender, message)
     });
-}
-
-function sendChunkedMessages(lyrics, sender, count) {
-    if (lyrics.length <= 0)
-        return
-    sendMessage(lyrics.substring(0, 640), sender, ++count)
-    sendChunkedMessages(lyrics.substring(640), sender, count)
-    return
-}
-
-function sendMessage(messageData, recipient, count) {
-    setTimeout(function() {
-        request({
-            url: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
-            method: 'POST',
-            json: {
-                recipient: {id:recipient},
-                message: {text:messageData},
-            }
-        }, function(error, response) {
-            if (error) {
-                console.log('Error sending messages: ', error)
-            } else if (response.body.error) {
-                console.log('Error: ', response.body.error)
-            }
-        })}, 1000 * count
-    );
-}
-
-function sendTextMessage(sender, text) {
-    let messageData = { text:text }
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
 }
 
 module.exports.getGeniusLyrics = getGeniusLyrics;
