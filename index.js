@@ -51,7 +51,7 @@ app.post('/webhook/', function (req, res) {
                 } else if (conversationStep == "SS1") {
                     redis.setConversationStep(sender, "SS2")
                     redis.setSong(sender, text)
-                    mailer.sendTextMessage(sender, "Great! And who is that song by?")
+                    mailer.sendTextMessage(sender, `Great! And who is ${text} by?`)
                 } else if (conversationStep == "SS2") {
                     redis.setConversationStep(sender, "RS0")
                     redis.setArtist(sender, text)
@@ -59,11 +59,13 @@ app.post('/webhook/', function (req, res) {
                         const song = response
                         const artist = text
                         mailer.sendLyricMessage(sender, song, artist)
+                        mailer.sendButtonMessage(sender, song, artist)
                     })
                 }
             } else if (event.postback) {
-                let text = JSON.stringify(event.postback)
-                mailer.sendTextMessage(sender, "Vote Registered: "+text.substring(0, 200), process.env.PAGE_ACCESS_TOKEN)
+                const title = event.postback.title
+                const payload = event.postback.payload
+                mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am in the process of learning! 😸`)
             }
         })
     }

@@ -52,60 +52,53 @@ function chunkedMessageHelper(messageData, recipient, count) {
     );
 }
 
-function sendCompareMessage(sender) {
+function sendButtonMessage(sender, song, artist) {
     let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": "Drake",
-                    "subtitle": "Champagne papi",
-                    "image_url": "http://www.media1.hw-static.com/media/2017/04/wenn_drake_041317_1800x1200-1800x1200.jpg",
-                    "buttons": [{
-                        "type": "web_url",
-                        "url": "https://youtu.be/sR_pfk9JVlc",
-                        "title": "Song"
-                    }, {
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"button",
+                "text":`Here you go! What else can I tell you about ${song} by ${artist}? 😸`,
+                "buttons":[
+                    {
                         "type": "postback",
-                        "title": "Vote",
-                        "payload": "I choose Drake",
-                    }],
-                }, {
-                    "title": "NAV",
-                    "subtitle": "Doesn't pay for his sneakers",
-                    "image_url": "http://universalmusic.umg-wp.com/files/2017/02/NAV.jpg",
-                    "buttons": [{
-                        "type": "web_url",
-                        "url": "https://youtu.be/4B7J_Ql2vjo",
-                        "title": "Song"
-                    }, {
+                        "title": "Spotify Link",
+                        "payload": "Song's Spotify Link"
+                    },
+                    {
                         "type": "postback",
-                        "title": "Vote",
-                        "payload": "I choose NAV",
-                    }],
-                }]
+                        "title": "Guitar Tutorial",
+                        "payload": "Guitar Tutorial"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "Dance Cover",
+                        "payload": "Dance Cover"
+                    },
+                ]
             }
         }
     }
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
+    setTimeout(function() {
+        request({
+            url: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {access_token:process.env.PAGE_ACCESS_TOKEN},
+            method: 'POST',
+            json: {
+                recipient: {id:sender},
+                message: messageData
+            }
+        }, function(error, response, body) {
+            if (error) {
+                console.log('Error sending messages: ', error)
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error)
+            }
+        }) }, 5000
+    )
 }
 
 module.exports.sendTextMessage = sendTextMessage;
 module.exports.sendLyricMessage = sendLyricMessage;
-module.exports.sendCompareMessage = sendCompareMessage;
 module.exports.sendChunkedMessages = sendChunkedMessages;
+module.exports.sendButtonMessage = sendButtonMessage;

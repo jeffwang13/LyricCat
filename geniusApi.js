@@ -17,7 +17,7 @@ function getGeniusLyrics(sender, song, artist) {
         }
         mailer.sendChunkedMessages(lyrics, sender, 0)
     }).catch(function(err) {
-        let message = "Oh no! The song you requested was not found in the Genius database."
+        let message = `Oh no! ${song} by ${artist} was not found in the Genius database.`
         mailer.sendTextMessage(sender, message)
     });
 }
