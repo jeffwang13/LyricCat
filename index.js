@@ -59,9 +59,12 @@ app.post('/webhook/', function (req, res) {
                     redis.getSong(sender, function(response) {
                         const song = response
                         const artist = text
-                        spotify.getTrack(song, artist)
-                        mailer.sendLyricMessage(sender, song, artist)
-                        mailer.sendButtonMessage(sender, song, artist, "", "")
+                        spotify.getSongLink(song, artist, function(songLink) {
+                            spotify.getSongArt(song, artist, function(songArtLink) {
+                                mailer.sendLyricMessage(sender, song, artist)
+                                mailer.sendButtonMessage(sender, song, artist, songArtLink, songLink)
+                            })
+                        })
                     })
                 }
             } else if (event.postback) {
