@@ -8,13 +8,17 @@ const spotify = new Spotify({
 
 function getSongLink(songName, artist, callback) {
     getTrack(songName, artist, function(trackData){
-        callback(trackData.tracks.items[0].external_urls.spotify)
+        if (typeof trackData.tracks.items[0] !== 'undefined') {
+            callback(trackData.tracks.items[0].external_urls.spotify)
+        }
     })
 }
 
 function getSongArt(songName, artist, callback) {
     getTrack(songName, artist, function(trackData){
-        callback(trackData.tracks.items[0].album.images[0].url)
+        if (typeof trackData.tracks.items[0] !== 'undefined') {
+            callback(trackData.tracks.items[0].album.images[0].url)
+        }
     })
 }
 
