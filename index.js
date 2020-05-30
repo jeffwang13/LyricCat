@@ -5,9 +5,9 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const geniusApi = require('./geniusApi')
-const mailer = require('./mailer')
-const redis = require('./redis')
+const geniusApi = require('./api/geniusApi')
+const mailer = require('./lib/mailer')
+const redis = require('./lib/redis')
 
 app.set('port', (process.env.PORT || 5000))
 

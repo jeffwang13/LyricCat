@@ -1,6 +1,6 @@
 const request = require('request');
 const lyricAPI = require('genius-lyrics-api');
-const mailer = require('./mailer')
+const mailer = require('../lib/mailer')
 
 function getGeniusLyrics(sender, song, artist) {
     const options = {
