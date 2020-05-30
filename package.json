@@ -16,6 +16,7 @@
     "express": "^4.15.3",
     "genius-lyrics-api": "^2.0.3",
     "lint": "^1.1.2",
+    "node-spotify-api": "^1.1.1",
     "parse5": "^3.0.2",
     "redis": "^3.0.2",
     "request": "^2.81.0",

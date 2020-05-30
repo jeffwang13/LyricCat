@@ -8,6 +8,7 @@ const app = express()
 const geniusApi = require('./api/geniusApi')
 const mailer = require('./lib/mailer')
 const redis = require('./lib/redis')
+const spotify = require('./api/spotifyApi')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -58,8 +59,9 @@ app.post('/webhook/', function (req, res) {
                     redis.getSong(sender, function(response) {
                         const song = response
                         const artist = text
+                        spotify.getTrack(song, artist)
                         mailer.sendLyricMessage(sender, song, artist)
-                        mailer.sendButtonMessage(sender, song, artist)
+                        mailer.sendButtonMessage(sender, song, artist, "", "")
                     })
                 }
             } else if (event.postback) {
