@@ -19,7 +19,7 @@ function getGeniusLyrics(sender, song, artist, callback) {
         mailer.sendChunkedMessages(lyrics, sender, 0)
         callback(noOfChunks)
     }).catch(function(err) {
-        let message = `Oh no! ${song} by ${artist} was not found in the Genius database.`
+        const message = `Oh no! ${song} by ${artist} was not found in the Genius database.`
         mailer.sendTextMessage(sender, message)
         callback(false)
     });

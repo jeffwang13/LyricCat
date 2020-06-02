@@ -82,13 +82,13 @@ app.post('/webhook/', function (req, res) {
                 } else if (title === "Dance Cover") {
                     const song = payload.split("_")[0]
                     const artist = payload.split("_")[1]
-                    youtube.getDanceCover(song, artist, function(videoData) {
+                    youtube.getDanceCover(song, artist, sender, function(videoData) {
                         mailer.sendVideoMessage(sender, videoData)
                     })
                 } else if (title === "Guitar Tutorial") {
                     const song = payload.split("_")[0]
                     const artist = payload.split("_")[1]
-                    youtube.getGuitarTutorial(song, artist, function(videoData) {
+                    youtube.getGuitarTutorial(song, artist, sender, function(videoData) {
                         mailer.sendVideoMessage(sender, videoData)
                     })
                 } else {
