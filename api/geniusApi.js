@@ -2,9 +2,7 @@ const request = require('request');
 const lyricAPI = require('genius-lyrics-api');
 const mailer = require('../lib/mailer')
 
-function getGeniusLyrics(sender, song, artist) {
-    let lyricsFound = true
-
+function getGeniusLyrics(sender, song, artist, callback) {
     const options = {
         apiKey: process.env.GENIUS_TOKEN, // genius developer access token
         title: song,
@@ -17,14 +15,14 @@ function getGeniusLyrics(sender, song, artist) {
         if (lyrics == null) {
             throw "NotFound"
         }
+        noOfChunks = lyrics.length / 640.0
         mailer.sendChunkedMessages(lyrics, sender, 0)
+        callback(noOfChunks)
     }).catch(function(err) {
         let message = `Oh no! ${song} by ${artist} was not found in the Genius database.`
         mailer.sendTextMessage(sender, message)
-        lyricsFound = false
+        callback(false)
     });
-
-    return lyricsFound
 }
 
 module.exports.getGeniusLyrics = getGeniusLyrics;

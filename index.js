@@ -52,18 +52,20 @@ app.post('/webhook/', function (req, res) {
                 } else if (conversationStep == "SS1") {
                     redis.setConversationStep(sender, "SS2")
                     redis.setSong(sender, text)
-                    mailer.sendTextMessage(sender, `Great! And who is ${text} by?`)
+                    mailer.sendTextMessage(sender, `Great! Just to be sure, ${text} by who?`)
                 } else if (conversationStep == "SS2") {
                     redis.setConversationStep(sender, "RS0")
                     redis.setArtist(sender, text)
                     redis.getSong(sender, function(response) {
                         const song = response
                         const artist = text
-                        if (mailer.sendLyricMessage(sender, song, artist)) {
-                            spotify.getSongData(song, artist, function(songData) {
-                                mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id)
-                            })
-                        }
+                        mailer.sendLyricMessage(sender, song, artist, function(noOfChunks) {
+                            if (noOfChunks != false) {
+                                spotify.getSongData(song, artist, function(songData) {
+                                    mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id, noOfChunks)
+                                })
+                            }
+                        })
                     })
                 }
             } else if (event.postback) {
@@ -80,11 +82,13 @@ app.post('/webhook/', function (req, res) {
                     redis.setConversationStep(sender, "RS0")
                     redis.setSong(sender, song)
                     redis.setArtist(sender, artist)
-                    if (mailer.sendLyricMessage(sender, song, artist)) {
-                        spotify.getSongData(song, artist, function(songData) {
-                            mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id)
-                        })
-                    }
+                    mailer.sendLyricMessage(sender, song, artist, function(noOfChunks) {
+                        if (noOfChunks != false) {
+                            spotify.getSongData(song, artist, function(songData) {
+                                mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id, noOfChunks)
+                            })
+                        }
+                    })
                 } else {
                     mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am in the process of learning! 😸`)
                 }
