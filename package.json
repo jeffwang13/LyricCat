@@ -22,7 +22,8 @@
     "request": "^2.81.0",
     "xmldom": "^0.1.27",
     "xmlserializer": "^0.6.0",
-    "xpath": "^0.0.24"
+    "xpath": "^0.0.24",
+    "yt-search": "^1.1.2"
   },
   "devDependencies": {
     "eslint": "^4.18.2",

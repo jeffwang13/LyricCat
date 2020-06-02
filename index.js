@@ -9,6 +9,7 @@ const geniusApi = require('./api/geniusApi')
 const mailer = require('./lib/mailer')
 const redis = require('./lib/redis')
 const spotify = require('./api/spotifyApi')
+const youtube = require('./api/youtubeApi')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -59,13 +60,7 @@ app.post('/webhook/', function (req, res) {
                     redis.getSong(sender, function(response) {
                         const song = response
                         const artist = text
-                        mailer.sendLyricMessage(sender, song, artist, function(noOfChunks) {
-                            if (noOfChunks != false) {
-                                spotify.getSongData(song, artist, function(songData) {
-                                    mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id, noOfChunks)
-                                })
-                            }
-                        })
+                        mailer.sendLyricMessage(sender, song, artist)
                     })
                 }
             } else if (event.postback) {
@@ -76,18 +71,25 @@ app.post('/webhook/', function (req, res) {
                     spotify.getSimilarSongs(payload, function(response) {
                         mailer.sendSimilarSongsMessage(sender, response)
                     })
-                } else if (payload.includes("%")) {
-                    const song = payload.split("%")[0]
-                    const artist = payload.split("%")[1]
+                } else if (payload.includes("*")) {
+                    // Similar song tapback, send user similar song lyrics and set them back to RS0
+                    const song = payload.split("*")[0]
+                    const artist = payload.split("*")[1]
                     redis.setConversationStep(sender, "RS0")
                     redis.setSong(sender, song)
                     redis.setArtist(sender, artist)
-                    mailer.sendLyricMessage(sender, song, artist, function(noOfChunks) {
-                        if (noOfChunks != false) {
-                            spotify.getSongData(song, artist, function(songData) {
-                                mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id, noOfChunks)
-                            })
-                        }
+                    mailer.sendLyricMessage(sender, song, artist)
+                } else if (title === "Dance Cover") {
+                    const song = payload.split("_")[0]
+                    const artist = payload.split("_")[1]
+                    youtube.getDanceCover(song, artist, function(videoData) {
+                        mailer.sendVideoMessage(sender, videoData)
+                    })
+                } else if (title === "Guitar Tutorial") {
+                    const song = payload.split("_")[0]
+                    const artist = payload.split("_")[1]
+                    youtube.getGuitarTutorial(song, artist, function(videoData) {
+                        mailer.sendVideoMessage(sender, videoData)
                     })
                 } else {
                     mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am in the process of learning! 😸`)
