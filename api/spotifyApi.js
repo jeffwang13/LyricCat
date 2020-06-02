@@ -6,18 +6,14 @@ const spotify = new Spotify({
     secret: process.env.SPOTIFY_CLIENT_SECRET
 });
 
-function getSongLink(songName, artist, callback) {
+function getSongData(songName, artist, callback) {
     getTrack(songName, artist, function(trackData){
         if (typeof trackData.tracks.items[0] !== 'undefined') {
-            callback(trackData.tracks.items[0].external_urls.spotify)
-        }
-    })
-}
-
-function getSongArt(songName, artist, callback) {
-    getTrack(songName, artist, function(trackData){
-        if (typeof trackData.tracks.items[0] !== 'undefined') {
-            callback(trackData.tracks.items[0].album.images[0].url)
+            const trackId = trackData.tracks.items[0].id
+            const trackLink = trackData.tracks.items[0].external_urls.spotify
+            const trackArt = trackData.tracks.items[0].album.images[0].url
+            const songData = {id: trackId, url: trackLink, art: trackArt}
+            callback(songData)
         }
     })
 }
@@ -38,6 +34,21 @@ function getTrack(songName, artist, callback) {
     })
 }
 
-module.exports.getSongLink = getSongLink;
-module.exports.getSongArt = getSongArt;
+function getSimilarSongs(trackId, callback) {
+    spotify
+        .request(`https://api.spotify.com/v1/recommendations?seed_tracks=${trackId}&limit=3`)
+        .then(function(data) {
+            response = []
+            for (const track of data.tracks) {
+                response.push({artist: track.artists[0].name, song: track.name})
+            }
+            callback(response)
+        })
+        .catch(function(err) {
+            console.error('Error occurred: ' + err);
+        });
+}
+
+module.exports.getSongData = getSongData;
+module.exports.getSimilarSongs = getSimilarSongs;
 module.exports.getTrack = getTrack;

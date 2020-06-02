@@ -60,10 +60,8 @@ app.post('/webhook/', function (req, res) {
                         const song = response
                         const artist = text
                         if (mailer.sendLyricMessage(sender, song, artist)) {
-                            spotify.getSongLink(song, artist, function(songLink) {
-                                spotify.getSongArt(song, artist, function(songArtLink) {
-                                    mailer.sendButtonMessage(sender, song, artist, songArtLink, songLink)
-                                })
+                            spotify.getSongData(song, artist, function(songData) {
+                                mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id)
                             })
                         }
                     })
@@ -71,7 +69,25 @@ app.post('/webhook/', function (req, res) {
             } else if (event.postback) {
                 const title = event.postback.title
                 const payload = event.postback.payload
-                mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am in the process of learning! 😸`)
+
+                if (title === "Similar Songs") {
+                    spotify.getSimilarSongs(payload, function(response) {
+                        mailer.sendSimilarSongsMessage(sender, response)
+                    })
+                } else if (payload.includes("%")) {
+                    const song = payload.split("%")[0]
+                    const artist = payload.split("%")[1]
+                    redis.setConversationStep(sender, "RS0")
+                    redis.setSong(sender, song)
+                    redis.setArtist(sender, artist)
+                    if (mailer.sendLyricMessage(sender, song, artist)) {
+                        spotify.getSongData(song, artist, function(songData) {
+                            mailer.sendButtonMessage(sender, song, artist, songData.art, songData.url, songData.id)
+                        })
+                    }
+                } else {
+                    mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am in the process of learning! 😸`)
+                }
             }
         })
     }
