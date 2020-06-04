@@ -9,11 +9,13 @@ const spotify = new Spotify({
 function getSongData(songName, artist, callback) {
     getTrack(songName, artist, function(trackData){
         if (typeof trackData.tracks.items[0] !== 'undefined') {
-            const trackId = trackData.tracks.items[0].id
-            const trackLink = trackData.tracks.items[0].external_urls.spotify
-            const trackArt = trackData.tracks.items[0].album.images[0].url
-            const songData = {id: trackId, url: trackLink, art: trackArt}
-            callback(songData)
+            getArtist(trackData.tracks.items[0].artists[0].id, function(artistData) {
+                const trackId = trackData.tracks.items[0].id
+                const trackLink = trackData.tracks.items[0].external_urls.spotify
+                const trackArt = trackData.tracks.items[0].album.images[0].url
+                const songData = {id: trackId, url: trackLink, art: trackArt, genres: artistData.genres}
+                callback(songData)
+            })
         }
     })
 }
@@ -30,6 +32,16 @@ function getTrack(songName, artist, callback) {
             })
         } else {
             callback(JSON.parse(cacheData))
+        }
+    })
+}
+
+function getArtist(artistId, callback) {
+    spotify.request(`https://api.spotify.com/v1/artists/${artistId}`, function(err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        } else {
+            callback(data)
         }
     })
 }
