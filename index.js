@@ -62,6 +62,11 @@ app.post('/webhook/', function (req, res) {
                         const artist = text
                         mailer.sendLyricMessage(sender, song, artist)
                     })
+                } else if (conversationStep == "Rec0") {
+                    redis.setConversationStep(sender, "RS0")
+                    redis.getRecommendedSong(sender, function(response) {
+                        mailer.sendRecommendMessage(sender, text, response)
+                    })
                 }
             } else if (event.postback) {
                 const title = event.postback.title
@@ -91,8 +96,12 @@ app.post('/webhook/', function (req, res) {
                     youtube.getGuitarTutorial(song, artist, sender, function(videoData) {
                         mailer.sendVideoMessage(sender, videoData)
                     })
+                } else if (title === "Recommend Song") {
+                    redis.setRecommendedSong(sender, payload)
+                    redis.setConversationStep(sender, "Rec0")
+                    mailer.sendTextMessage(sender, `What's the name of the lucky person you're recommending this song to? 😸`)
                 } else {
-                    mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am in the process of learning! 😸`)
+                    mailer.sendTextMessage(sender, `Sorry, I don't know ${title} yet, but I am quickly learning! 😸`)
                 }
             }
         })
