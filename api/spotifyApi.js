@@ -10,10 +10,10 @@ function getSongData(songName, artist, callback) {
     getTrack(songName, artist, function(trackData){
         if (typeof trackData.tracks.items[0] !== 'undefined') {
             getArtist(trackData.tracks.items[0].artists[0].id, function(artistData) {
-                const trackId = trackData.tracks.items[0].id
-                const trackLink = trackData.tracks.items[0].external_urls.spotify
-                const trackArt = trackData.tracks.items[0].album.images[0].url
-                const songData = {id: trackId, url: trackLink, art: trackArt, genres: artistData.genres}
+                const track = trackData.tracks.items[0]
+                const trackLink = track.external_urls.spotify
+                const trackArt = track.album.images[0].url
+                const songData = {id: track.id, url: trackLink, art: trackArt, genres: artistData.genres, name: track.name, artist: artistData.name}
                 callback(songData)
             })
         }
