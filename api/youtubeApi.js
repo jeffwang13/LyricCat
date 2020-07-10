@@ -1,37 +1,32 @@
 const mailer = require('../lib/mailer')
-const youtubeSearch = require( 'yt-search' )
+const youtubeSearch = require('youtube-search');
+
 
 function getDanceCover(song, artist, sender, callback) {
     query = `${song} ${artist} dance cover`
-    executeSearch(query, sender, function(result) {
+    executeSearch(query, function(result) {
         callback(result)
     })
 }
 
 function getGuitarTutorial(song, artist, sender, callback) {
     query = `${song} ${artist} guitar tutorial`
-    executeSearch(query, sender, function(result) {
+    executeSearch(query, function(result) {
         callback(result)
     })
 }
 
-function executeSearch(query, sender, callback) {
+function executeSearch(query, callback) {
     const opts = {
-        query: query,
-        pageStart: 1,
-        pageEnd: 1
+        maxResults: 1,
+        key: process.env.GOOGLE_API_KEY
     }
-    youtubeSearch( opts, function (err, r) {
-        if (err || typeof(r.videos[0]) === 'undefined') {
-            setTimeout(function(){
-                executeSearch(query, sender, function(result) {
-                    callback(result)
-                })
-            }, 1000)
-        } else {
-            const topResult = r.videos[0]
-            callback({title: topResult.title, url: topResult.url, image: topResult.image})
-        }
+
+    youtubeSearch(query, opts, function(err, results) {
+        if(err) return console.log(err);
+
+        const topResult = results[0]
+        callback({title: topResult.title, url: topResult.link, image: `https://img.youtube.com/vi/${topResult.id}/0.jpg`})
     })
 }
 
